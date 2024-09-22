@@ -53,11 +53,7 @@ public class TaskManager {
     }
 
     public void deleteEpicTasks() {
-        for (Epic epic : epicTasks.values()) {
-            for (Subtask subtask : epic.getSubtasks()) {
-                subtaskTasks.remove(subtask.getTaskId());
-            }
-        }
+        subtaskTasks.clear();
         epicTasks.clear();
     }
 
@@ -81,8 +77,9 @@ public class TaskManager {
     }
 
     public void updateSubtaskTask(Subtask subtask) {
-        int taskId = subtask.getTaskId();
-        subtaskTasks.replace(taskId, subtask);
+        subtaskTasks.replace(subtask.getTaskId(), subtask);
+        Epic epic = epicTasks.get(subtask.getEpicId());
+        epic.updateSubtask(subtask);
     }
 
     public ArrayList<Subtask> getAllSubtaskTusks() {
