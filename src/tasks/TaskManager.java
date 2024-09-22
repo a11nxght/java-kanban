@@ -35,6 +35,10 @@ public class TaskManager {
     }
 
     //epic
+    public ArrayList<Subtask> getSubtaskTasksFromEpic(Epic epic) {
+        return epic.getSubtasks();
+    }
+
     public void createNewEpic (Epic epic) {
         epicTasks.put(epic.getTaskId(), epic);
     }
