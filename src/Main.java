@@ -52,5 +52,8 @@ public class Main {
         for (Subtask subtask : taskManager.getAllSubtaskTusks()){
             System.out.println(subtask);
         }
+
+        taskManager.deleteTaskTaskById(1);
+        taskManager.deleteEpicTaskById(2);
     }
 }

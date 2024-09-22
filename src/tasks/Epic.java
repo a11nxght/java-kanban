@@ -23,7 +23,6 @@ public class Epic extends Task{
     }
 
     public void updateSubtask(Subtask subtask) {
-        int taskId = subtask.getTaskId();
         subtasks.replace(subtask.getTaskId(), subtask);
         int done = 0;
         for (Subtask iSubtask : subtasks.values()){
