@@ -4,18 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Epic extends Task{
-    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     public Epic(String name, String description, int taskId) {
         super(name, description, taskId);
     }
 
+    public Epic(String name, String description) {
+        super(name, description);
+    }
+
     public void deleteSubtask(Subtask subtask) {
         subtasks.remove(subtask.getTaskId());
+        updateStatus();
+    }
+
+    public void deleteAllSubtasks() {
+        subtasks.clear();
+        updateStatus();
     }
 
     public void addSubtask(Subtask subtask) {
         subtasks.put(subtask.getTaskId(), subtask);
+        updateStatus();
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -24,26 +35,34 @@ public class Epic extends Task{
 
     public void updateSubtask(Subtask subtask) {
         subtasks.replace(subtask.getTaskId(), subtask);
+        updateStatus();
+    }
+
+    public void updateStatus() {
+        if (subtasks.isEmpty()){
+            status = Status.NEW;
+            return;
+        }
         int done = 0;
         for (Subtask iSubtask : subtasks.values()){
             if (iSubtask.getStatus() == Status.IN_PROGRESS) {
-                super.setStatus(Status.IN_PROGRESS);
-                break;
+                status = Status.IN_PROGRESS;
+                return;
             } else if (iSubtask.getStatus() == Status.DONE) {
                 done++;
             }
         }
-        if (done == subtasks.size()) super.setStatus(Status.DONE);
+        if (done == subtasks.size()) status = Status.DONE;
     }
 
     @Override
     public String toString() {
         return "Epic{" +
                 "subtasks=" + subtasks +
-                ", name='" + super.getName() + '\'' +
-                ", description='" + super.getDescription() + '\'' +
-                ", taskId=" + super.getTaskId() +
-                ", status=" + super.getStatus() +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", taskId=" + taskId +
+                ", status=" + status +
                 '}';
     }
 }

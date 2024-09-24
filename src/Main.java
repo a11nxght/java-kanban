@@ -1,3 +1,4 @@
+import service.TaskManager;
 import tasks.*;
 
 import java.util.ArrayList;
@@ -7,22 +8,23 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager taskManager = new TaskManager();
-        Task task1 = new Task("first", "first task", taskManager.taskId++);
-        Task task2 = new Task("second", "second task", taskManager.taskId++);
-        Epic epic1 = new Epic("third", "first epic", taskManager.taskId++);
-        Subtask subtask1 = new Subtask("forth", "first subtask", taskManager.taskId++, epic1.getTaskId());
-        Subtask subtask2 = new Subtask("fifth", "second subtask", taskManager.taskId++, epic1.getTaskId());
-        Epic epic2 = new Epic("sixth", "second epic", taskManager.taskId++);
-        Subtask subtask3 = new Subtask("seventh", "first subtask", taskManager.taskId++, epic2.getTaskId());
+        ArrayList<Integer> taskNumbers = new ArrayList<>();
+        Task task1 = new Task("first", "first task");
+        Task task2 = new Task("second", "second task");
+        Epic epic1 = new Epic("third", "first epic");
+        Subtask subtask1 = new Subtask("forth", "first subtask", 2);
+        Subtask subtask2 = new Subtask("fifth", "second subtask", 2);
+        Epic epic2 = new Epic("sixth", "second epic");
+        Subtask subtask3 = new Subtask("seventh", "first subtask", 5);
 
-        taskManager.createNewTask(task1);
-        taskManager.createNewTask(task2);
-        taskManager.createNewEpic(epic1);
-        taskManager.createNewSubtask(subtask1);
-        taskManager.createNewSubtask(subtask2);
-        taskManager.createNewEpic(epic2);
-        taskManager.createNewSubtask(subtask3);
-
+        taskNumbers.add(taskManager.createNewTask(task1));
+        taskNumbers.add(taskManager.createNewTask(task2));
+        taskNumbers.add(taskManager.createNewEpic(epic1));
+        taskNumbers.add(taskManager.createNewSubtask(subtask1));
+        taskNumbers.add(taskManager.createNewSubtask(subtask2));
+        taskNumbers.add(taskManager.createNewEpic(epic2));
+        taskNumbers.add(taskManager.createNewSubtask(subtask3));
+        System.out.println(taskNumbers);
         for (Task task : taskManager.getAllTaskTasks()) {
             System.out.println(task);
         }
