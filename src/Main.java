@@ -45,6 +45,9 @@ public class Main {
         taskManager.updateSubtaskTask(subtask3);
         System.out.println("epic2 = " + epic2);
 
+        taskManager.deleteTaskTaskById(task1.getTaskId());
+        taskManager.deleteEpicTaskById(epic1.getTaskId());
+
         for (Task task : taskManager.getAllTaskTasks()) {
             System.out.println(task);
         }
@@ -55,7 +58,5 @@ public class Main {
             System.out.println(subtask);
         }
 
-        taskManager.deleteTaskTaskById(task1.getTaskId());
-        taskManager.deleteEpicTaskById(epic1.getTaskId());
     }
 }
