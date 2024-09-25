@@ -15,10 +15,9 @@ public class TaskManager {
 
     //task
     public int createNewTask(Task task) {
-        task.setTaskId(taskId);
+        task.setTaskId(++taskId);
         taskTasks.put(taskId, task);
-        taskId++;
-        return taskId - 1;
+        return taskId;
     }
 
     public void updateTaskTask(Task task) {
@@ -57,10 +56,9 @@ public class TaskManager {
     }
 
     public int createNewEpic(Epic epic) {
-        epic.setTaskId(taskId);
+        epic.setTaskId(++taskId);
         epicTasks.put(taskId, epic);
-        taskId++;
-        return taskId - 1;
+        return taskId;
     }
 
     public void updateEpicTask(Epic epic) {
@@ -99,12 +97,11 @@ public class TaskManager {
     //subtask
     public int createNewSubtask(Subtask subtask) {
         if (epicTasks.containsKey(subtask.getEpicId())) {
-            subtask.setTaskId(taskId);
+            subtask.setTaskId(++taskId);
             subtaskTasks.put(taskId, subtask);
             Epic epic = epicTasks.get(subtask.getEpicId());
             epic.addSubtask(subtask);
-            taskId++;
-            return taskId - 1;
+            return taskId;
         }
         System.out.println("Нет эпика с таким Id");
         return -1;

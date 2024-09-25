@@ -43,16 +43,23 @@ public class Epic extends Task{
             status = Status.NEW;
             return;
         }
-        int done = 0;
+        int doneSubtasks = 0;
+        int newSubtasks = 0;
         for (Subtask iSubtask : subtasks.values()){
             if (iSubtask.getStatus() == Status.IN_PROGRESS) {
                 status = Status.IN_PROGRESS;
                 return;
             } else if (iSubtask.getStatus() == Status.DONE) {
-                done++;
+                doneSubtasks++;
+            } else if (iSubtask.getStatus() == Status.NEW) {
+                newSubtasks++;
             }
         }
-        if (done == subtasks.size()) status = Status.DONE;
+        if (doneSubtasks == subtasks.size()){
+            status = Status.DONE;
+        } else if (newSubtasks == subtasks.size()) {
+            status = Status.NEW;
+        }
     }
 
     @Override
