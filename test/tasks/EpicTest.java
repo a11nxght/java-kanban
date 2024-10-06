@@ -15,6 +15,10 @@ class EpicTest {
     }
 
     @Test
-    void name() {
+    void checkThatEpicCannotBeAddedToItselfAsASubtask() {
+        Epic epic1 = new Epic("1", "1", 1);
+        epic1.addSubtask(1);
+
+        assertEquals(0, epic1.getSubtasks().size());
     }
 }
