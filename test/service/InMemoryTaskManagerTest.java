@@ -271,8 +271,6 @@ class InMemoryTaskManagerTest {
         assertEquals(id, taskManager.getTask(task.getTaskId()).getTaskId());
     }
 
-    //5. Убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
-
     @Test
     void testTaskAddedToHistoryManagerSavesThePreviousVersion() {
         Task task = new Task("t1", "t1");
