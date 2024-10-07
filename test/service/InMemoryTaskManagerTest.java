@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-    private static TaskManager taskManager;
-    private static ArrayList<Integer> taskNumbers;
+    private TaskManager taskManager;
+    private ArrayList<Integer> taskNumbers;
 
     @BeforeEach
     void setUp() {
@@ -277,12 +277,12 @@ class InMemoryTaskManagerTest {
         taskManager.createNewTask(task);
 
         taskManager.getTask(task.getTaskId());
-        assertEquals(task.getName(), taskManager.getHistoryManager().getHistory().getFirst().getName());
-        assertEquals(task.getDescription(), taskManager.getHistoryManager().getHistory().getFirst().getDescription());
+        assertEquals(task.getName(), taskManager.getHistory().getFirst().getName());
+        assertEquals(task.getDescription(), taskManager.getHistory().getFirst().getDescription());
         task.setName("t1t1t1t1t");
         taskManager.updateTask(task);
         taskManager.getTask(task.getTaskId());
-        assertEquals(task.getName(), taskManager.getHistoryManager().getHistory().getLast().getName());
-        assertNotEquals(task.getName(), taskManager.getHistoryManager().getHistory().getFirst().getName());
+        assertEquals(task.getName(), taskManager.getHistory().getLast().getName());
+        assertNotEquals(task.getName(), taskManager.getHistory().getFirst().getName());
     }
 }
