@@ -46,7 +46,7 @@ public class Main {
         taskManager.updateTask(task2);
         taskManager.getTask(task2.getTaskId());
         taskManager.getSubtask(subtask2.getTaskId());
-        subtask2 = new Subtask("fifth", "second subtask", subtask2.getTaskId(), Status.IN_PROGRESS, epic1.getTaskId());
+        subtask2 = new Subtask("fiftttth", "second subtask", subtask2.getTaskId(), Status.IN_PROGRESS, epic1.getTaskId());
         taskManager.updateSubtask(subtask2);
         taskManager.getSubtask(subtask2.getTaskId());
         taskManager.getSubtask(subtask3.getTaskId());

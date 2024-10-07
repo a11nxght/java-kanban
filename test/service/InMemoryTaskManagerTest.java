@@ -272,4 +272,19 @@ class InMemoryTaskManagerTest {
     }
 
     //5. Убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
+
+    @Test
+    void testTaskAddedToHistoryManagerSavesThePreviousVersion() {
+        Task task = new Task("t1", "t1");
+        taskManager.createNewTask(task);
+
+        taskManager.getTask(task.getTaskId());
+        assertEquals(task.getName(), taskManager.getHistoryManager().getHistory().getFirst().getName());
+        assertEquals(task.getDescription(), taskManager.getHistoryManager().getHistory().getFirst().getDescription());
+        task.setName("t1t1t1t1t");
+        taskManager.updateTask(task);
+        taskManager.getTask(task.getTaskId());
+        assertEquals(task.getName(), taskManager.getHistoryManager().getHistory().getLast().getName());
+        assertNotEquals(task.getName(), taskManager.getHistoryManager().getHistory().getFirst().getName());
+    }
 }

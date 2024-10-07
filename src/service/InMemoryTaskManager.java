@@ -56,8 +56,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int taskId) {
-        historyManager.add(taskTasks.get(taskId));
-        return taskTasks.get(taskId);
+        if (taskTasks.containsKey(taskId)) {
+            Task task = taskTasks.get(taskId);
+            Task taskForHistory = new Task(task.getName(), task.getDescription(), task.getTaskId());
+            taskForHistory.setStatus(task.getStatus());
+            historyManager.add(taskForHistory);
+            return taskTasks.get(taskId);
+        }
+        return null;
     }
 
     //epic
@@ -115,8 +121,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int taskId) {
-        historyManager.add(epicTasks.get(taskId));
-        return epicTasks.get(taskId);
+        if (epicTasks.containsKey(taskId)){
+            Epic epic = epicTasks.get(taskId);
+            Epic epicForHistory = new Epic(epic.getName(), epic.getDescription(), epic.getTaskId());
+            for (int subtaskId : epic.getSubtasks()){
+                epicForHistory.addSubtask(subtaskId);
+            }
+            epicForHistory.setStatus(epic.getStatus());
+            historyManager.add(epicForHistory);
+            return epicTasks.get(taskId);
+        }
+        return null;
     }
 
     //subtask
@@ -195,7 +210,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(int taskId) {
-        historyManager.add(subtaskTasks.get(taskId));
-        return subtaskTasks.get(taskId);
+        if (subtaskTasks.containsKey(taskId)) {
+            Subtask subtask = subtaskTasks.get(taskId);
+            Subtask subtaskForHistory = new Subtask(subtask.getName(), subtask.getDescription(), subtask.getTaskId(), subtask.getEpicId());
+            subtaskForHistory.setStatus(subtask.getStatus());
+            historyManager.add(subtaskForHistory);
+            return subtaskTasks.get(taskId);
+        }
+        return null;
     }
 }
