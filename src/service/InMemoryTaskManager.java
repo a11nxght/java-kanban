@@ -22,6 +22,12 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    private void deleteAllTasksFromHistoryManager(HashMap<Integer, ? extends Task> tasks) {
+        for (Integer i : tasks.keySet()) {
+            historyManager.remove(i);
+        }
+    }
+
     //task
     @Override
     public int createNewTask(Task task) {
@@ -47,11 +53,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        deleteAllTasksFromHistoryManager(taskTasks);
         taskTasks.clear();
     }
 
     @Override
     public void deleteTask(int taskId) {
+        historyManager.remove(taskId);
         taskTasks.remove(taskId);
     }
 
@@ -105,7 +113,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
+        deleteAllTasksFromHistoryManager(subtaskTasks);
         subtaskTasks.clear();
+        deleteAllTasksFromHistoryManager(epicTasks);
         epicTasks.clear();
     }
 
@@ -115,7 +125,9 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epicTasks.get(taskId);
             for (Integer subtaskId : epic.getSubtasks()) {
                 subtaskTasks.remove(subtaskId);
+                historyManager.remove(subtaskId);
             }
+            historyManager.remove(taskId);
             epicTasks.remove(taskId);
         } else System.out.println("Нет эпика с таким Id");
     }
@@ -195,6 +207,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.deleteAllSubtasks();
             updateEpicStatus(epic);
         }
+        deleteAllTasksFromHistoryManager(subtaskTasks);
         subtaskTasks.clear();
     }
 
@@ -205,6 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epicTasks.get(subtask.getEpicId());
             epic.deleteSubtask(taskId);
             updateEpicStatus(epic);
+            historyManager.remove(taskId);
             subtaskTasks.remove(taskId);
         } else System.out.println("Подзадачи с таким Id нет.");
     }
