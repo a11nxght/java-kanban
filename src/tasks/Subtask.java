@@ -1,14 +1,13 @@
 package tasks;
 
-public class Subtask extends Task{
+public class Subtask extends Task {
     private final int epicId;
 
     public Subtask(String name, String description, int taskId, int epicId) {
         super(name, description, taskId);
         if (taskId != epicId) {
             this.epicId = epicId;
-        }
-        else {
+        } else {
             this.epicId = -1;
         }
     }
@@ -17,8 +16,7 @@ public class Subtask extends Task{
         super(name, description, taskId, status);
         if (taskId != epicId) {
             this.epicId = epicId;
-        }
-        else {
+        } else {
             this.epicId = -1;
         }
     }
