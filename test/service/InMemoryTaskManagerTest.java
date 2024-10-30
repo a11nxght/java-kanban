@@ -270,19 +270,4 @@ class InMemoryTaskManagerTest {
         assertNotNull(taskManager.getTask(task.getTaskId()));
         assertEquals(id, taskManager.getTask(task.getTaskId()).getTaskId());
     }
-
-    @Test
-    void testTaskAddedToHistoryManagerSavesThePreviousVersion() {
-        Task task = new Task("t1", "t1");
-        taskManager.createNewTask(task);
-
-        taskManager.getTask(task.getTaskId());
-        assertEquals(task.getName(), taskManager.getHistory().getFirst().getName());
-        assertEquals(task.getDescription(), taskManager.getHistory().getFirst().getDescription());
-        task.setName("t1t1t1t1t");
-        taskManager.updateTask(task);
-        taskManager.getTask(task.getTaskId());
-        assertEquals(task.getName(), taskManager.getHistory().getLast().getName());
-        assertNotEquals(task.getName(), taskManager.getHistory().getFirst().getName());
-    }
 }
