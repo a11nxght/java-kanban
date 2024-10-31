@@ -32,9 +32,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public ArrayList<Task> getHistory() {
-        if (first == null) {
-            return new ArrayList<>();
-        }
         ArrayList<Task> arrayList = new ArrayList<>();
         Node next = first;
         while (next != null) {
@@ -61,15 +58,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private Node linkLast(Task lastTask) {
+        final Node node = new Node(last, null, lastTask);
         if (first == null) {
-            first = new Node(null, null, lastTask);
-            last = first;
-            return first;
+            first = node;
         } else {
-            Node node = new Node(last, null, lastTask);
             last.next = node;
-            last = node;
-            return node;
         }
+        last = node;
+        return node;
     }
 }

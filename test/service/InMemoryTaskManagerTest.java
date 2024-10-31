@@ -270,4 +270,35 @@ class InMemoryTaskManagerTest {
         assertNotNull(taskManager.getTask(task.getTaskId()));
         assertEquals(id, taskManager.getTask(task.getTaskId()).getTaskId());
     }
+
+    @Test
+    void tasksDeleteFromHistory() {
+        TaskManager taskManager = Managers.getDefault();
+        Epic epic1 = new Epic("epic1", "epic1");
+        Epic epic2 = new Epic("epic2", "epic2");
+        taskManager.createNewEpic(epic1);
+        taskManager.createNewEpic(epic2);
+        Subtask subtask1 = new Subtask("sub1", "sub1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask("sub2", "sub2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask("sub3", "sub3", epic1.getTaskId());
+        taskManager.createNewSubtask(subtask1);
+        taskManager.createNewSubtask(subtask2);
+        taskManager.createNewSubtask(subtask3);
+        taskManager.getSubtask(subtask1.getTaskId());
+        taskManager.getEpic(epic1.getTaskId());
+        taskManager.getSubtask(subtask3.getTaskId());
+        taskManager.getSubtask(subtask2.getTaskId());
+        taskManager.getEpic(epic2.getTaskId());
+        taskManager.getSubtask(subtask2.getTaskId());
+        taskManager.getEpic(epic1.getTaskId());
+        taskManager.getSubtask(subtask3.getTaskId());
+        taskManager.getSubtask(subtask2.getTaskId());
+        taskManager.getEpic(epic1.getTaskId());
+        assertEquals(5, taskManager.getHistory().size());
+        taskManager.deleteSubtask(subtask1.getTaskId());
+        assertEquals(4, taskManager.getHistory().size());
+        taskManager.deleteEpic(epic1.getTaskId());
+        assertEquals(1, taskManager.getHistory().size());
+        assertEquals(epic2, taskManager.getHistory().getFirst());
+    }
 }
