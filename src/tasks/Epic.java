@@ -2,7 +2,7 @@ package tasks;
 
 import java.util.ArrayList;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private final ArrayList<Integer> subtasks = new ArrayList<>();
 
     public Epic(String name, String description, int taskId) {
@@ -22,7 +22,7 @@ public class Epic extends Task{
     }
 
     public void addSubtask(Integer subtaskId) {
-        if (subtaskId != taskId){
+        if (subtaskId != taskId) {
             subtasks.add(subtaskId);
         }
     }
