@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasks = new ArrayList<>();
+    final Type type = Type.EPIC;
 
     public Epic(String name, String description, int taskId) {
         super(name, description, taskId);
@@ -22,7 +23,7 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Integer subtaskId) {
-        if (subtaskId != taskId) {
+        if (subtaskId != taskId && !subtasks.contains(subtaskId)) {
             subtasks.add(subtaskId);
         }
     }
@@ -33,12 +34,6 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "subtasks=" + subtasks +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", taskId=" + taskId +
-                ", status=" + status +
-                '}';
+        return String.format("%d, %s, %s, %s, %s,", taskId, type, name, status, description);
     }
 }

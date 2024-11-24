@@ -2,6 +2,7 @@ package tasks;
 
 public class Subtask extends Task {
     private final int epicId;
+    private final Type type = Type.SUBTASK;
 
     public Subtask(String name, String description, int taskId, int epicId) {
         super(name, description, taskId);
@@ -32,12 +33,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "epicId=" + epicId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", taskId=" + taskId +
-                ", status=" + status +
-                '}';
+        return String.format("%d, %s, %s, %s, %s,%d", taskId, type, name, status, description, epicId);
     }
+
 }
