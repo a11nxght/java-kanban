@@ -8,11 +8,16 @@ public class Task {
     protected int taskId;
     protected Status status;
 
+    private Type type = Type.TASK;
+
     public Type getType() {
         return type;
     }
 
-    private final Type type = Type.TASK;
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public Task(String name, String description, int taskId) {
         this.name = name;
         this.description = description;
@@ -79,6 +84,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%d, %s, %s, %s, %s,", taskId, type, name, status, description);
+        return String.format("%d,%s,%s,%s,%s,", taskId, type, name, status, description);
     }
 }
