@@ -50,7 +50,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void save() throws ManagerSaveException {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(String.valueOf(path.getFileName())))){
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(String.valueOf(path.getFileName())))) {
             bufferedWriter.write("id,type,name,status,description,epic\n");
             final ArrayList<Task> taskTasks = getAllTasks();
             final ArrayList<Epic> epicTasks = getAllEpics();
@@ -69,17 +69,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    Task fromString(String value){
+    Task fromString(String value) {
         String[] values = value.split(",");
         Status status = Status.NEW;
         if (values[3].equals("IN_PROGRESS")) {
             status = Status.IN_PROGRESS;
-        } else if (values[3].equals("DONE")){
+        } else if (values[3].equals("DONE")) {
             status = Status.DONE;
         }
 
         if (values[1].equals("TASK")) {
-            Task task = new  Task(values[2], values[4], Integer.parseInt(values[0]), status);
+            Task task = new Task(values[2], values[4], Integer.parseInt(values[0]), status);
             task.setType(Type.TASK);
             return task;
         } else if (values[1].equals("EPIC")) {
