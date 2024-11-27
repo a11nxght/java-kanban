@@ -8,7 +8,7 @@ public class Task {
     protected int taskId;
     protected Status status;
 
-    private Type type = Type.TASK;
+    Type type = Type.TASK;
 
     public Type getType() {
         return type;

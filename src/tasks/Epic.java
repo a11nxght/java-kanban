@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasks = new ArrayList<>();
-    final Type type = Type.EPIC;
+
 
     public Epic(String name, String description, int taskId) {
         super(name, description, taskId);
+        super.setType(Type.EPIC);
     }
 
     public Epic(String name, String description) {
         super(name, description);
+        super.setType(Type.EPIC);
     }
 
     public void deleteSubtask(Integer subtaskId) {
