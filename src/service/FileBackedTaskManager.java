@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -28,7 +27,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String[] dataArray = data.split("\n");
             for (int i = 1; i < dataArray.length; i++) {
                 Task task = fileBackedTaskManager.fromString(dataArray[i]);
-                if (task == null){
+                if (task == null) {
                     continue;
                 }
                 if (fileBackedTaskManager.taskId < task.getTaskId()) {

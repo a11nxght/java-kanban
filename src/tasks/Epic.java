@@ -32,8 +32,4 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d,%s,%s,%s,%s,", taskId, type, name, status, description);
-    }
 }
