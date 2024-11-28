@@ -3,6 +3,7 @@ package service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
+import tasks.Type;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,9 +17,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addAndGet() {
-        Task task1 = new Task("t1", "t1", 1);
-        Task task2 = new Task("t2", "t2", 2);
-        Task task3 = new Task("t3", "t3", 3);
+        Task task1 = new Task(Type.TASK, "t1", "t1", 1);
+        Task task2 = new Task(Type.TASK, "t2", "t2", 2);
+        Task task3 = new Task(Type.TASK, "t3", "t3", 3);
         historyManager.add(task1);
         task1.setName("t1t1");
         historyManager.add(task1);
@@ -31,9 +32,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void remove() {
-        Task task1 = new Task("t1", "t1", 1);
-        Task task2 = new Task("t2", "t2", 2);
-        Task task3 = new Task("t3", "t3", 3);
+        Task task1 = new Task(Type.TASK, "t1", "t1", 1);
+        Task task2 = new Task(Type.TASK, "t2", "t2", 2);
+        Task task3 = new Task(Type.TASK, "t3", "t3", 3);
         historyManager.add(task1);
         assertEquals(historyManager.getHistory().size(), 1);
         historyManager.remove(task1.getTaskId());

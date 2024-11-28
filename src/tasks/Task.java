@@ -8,33 +8,32 @@ public class Task {
     protected int taskId;
     protected Status status;
 
-    Type type = Type.TASK;
+    protected final Type type;
 
     public Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public Task(String name, String description, int taskId) {
+    public Task(Type type, String name, String description, int taskId) {
         this.name = name;
         this.description = description;
         this.taskId = taskId;
+        this.type = type;
     }
 
-    public Task(String name, String description, int taskId, Status status) {
+    public Task(Type type, String name, String description, int taskId, Status status) {
         this.taskId = taskId;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = type;
     }
 
-    public Task(String name, String description) {
+    public Task(Type type, String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.type = type;
     }
 
     public String getName() {

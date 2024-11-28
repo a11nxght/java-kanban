@@ -4,9 +4,8 @@ public class Subtask extends Task {
     private final int epicId;
 
 
-    public Subtask(String name, String description, int taskId, int epicId) {
-        super(name, description, taskId);
-        super.setType(Type.SUBTASK);
+    public Subtask(Type type, String name, String description, int taskId, int epicId) {
+        super(type, name, description, taskId);
         if (taskId != epicId) {
             this.epicId = epicId;
         } else {
@@ -14,9 +13,8 @@ public class Subtask extends Task {
         }
     }
 
-    public Subtask(String name, String description, int taskId, Status status, int epicId) {
-        super(name, description, taskId, status);
-        super.setType(Type.SUBTASK);
+    public Subtask(Type type, String name, String description, int taskId, Status status, int epicId) {
+        super(type, name, description, taskId, status);
         if (taskId != epicId) {
             this.epicId = epicId;
         } else {
@@ -24,10 +22,9 @@ public class Subtask extends Task {
         }
     }
 
-    public Subtask(String name, String description, int epicId) {
-        super(name, description);
+    public Subtask(Type type, String name, String description, int epicId) {
+        super(type, name, description);
         this.epicId = epicId;
-        super.setType(Type.SUBTASK);
     }
 
     public int getEpicId() {
