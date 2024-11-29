@@ -7,13 +7,13 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager taskManager = Managers.getDefault();
-        Epic epic1 = new Epic("epic1", "epic1");
-        Epic epic2 = new Epic("epic2", "epic2");
+        Epic epic1 = new Epic(Type.EPIC, "epic1", "epic1");
+        Epic epic2 = new Epic(Type.EPIC, "epic2", "epic2");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
-        Subtask subtask1 = new Subtask("sub1", "sub1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("sub2", "sub2", epic1.getTaskId());
-        Subtask subtask3 = new Subtask("sub3", "sub3", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "sub1", "sub1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "sub2", "sub2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask(Type.SUBTASK, "sub3", "sub3", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.createNewSubtask(subtask3);

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.Type;
 
 import java.util.ArrayList;
 
@@ -22,30 +23,30 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createNewTask() {
-        Task task1 = new Task("first", "first task");
+        Task task1 = new Task(Type.TASK, "first", "first task");
         taskNumbers.add(taskManager.createNewTask(task1));
         assertNotEquals(0, task1.getTaskId());
     }
 
     @Test
     void createNewEpic() {
-        Epic epic1 = new Epic("third", "first epic");
+        Epic epic1 = new Epic(Type.EPIC, "third", "first epic");
         taskNumbers.add(taskManager.createNewEpic(epic1));
         assertNotEquals(0, epic1.getTaskId());
     }
 
     @Test
     void createNewSubtask() {
-        Epic epic1 = new Epic("third", "first epic");
+        Epic epic1 = new Epic(Type.EPIC, "third", "first epic");
         taskNumbers.add(taskManager.createNewEpic(epic1));
-        Subtask subtask1 = new Subtask("forth", "first subtask", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "forth", "first subtask", epic1.getTaskId());
         taskNumbers.add(taskManager.createNewSubtask(subtask1));
         assertNotEquals(0, subtask1.getTaskId());
     }
 
     @Test
     void updateTask() {
-        Task task1 = new Task("first", "first task");
+        Task task1 = new Task(Type.TASK, "first", "first task");
         taskNumbers.add(taskManager.createNewTask(task1));
         task1.setDescription("task first");
         task1.setName("tsrif");
@@ -57,9 +58,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllTasks() {
-        Task task1 = new Task("1", "11");
-        Task task2 = new Task("2", "22");
-        Task task3 = new Task("3", "33");
+        Task task1 = new Task(Type.TASK, "1", "11");
+        Task task2 = new Task(Type.TASK, "2", "22");
+        Task task3 = new Task(Type.TASK, "3", "33");
         taskManager.createNewTask(task1);
         taskManager.createNewTask(task2);
         taskManager.createNewTask(task3);
@@ -72,9 +73,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteAllTasks() {
-        Task task1 = new Task("1", "11");
-        Task task2 = new Task("2", "22");
-        Task task3 = new Task("3", "33");
+        Task task1 = new Task(Type.TASK, "1", "11");
+        Task task2 = new Task(Type.TASK, "2", "22");
+        Task task3 = new Task(Type.TASK, "3", "33");
         taskManager.createNewTask(task1);
         taskManager.createNewTask(task2);
         taskManager.createNewTask(task3);
@@ -84,8 +85,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteTask() {
-        Task task1 = new Task("1", "11");
-        Task task2 = new Task("2", "22");
+        Task task1 = new Task(Type.TASK, "1", "11");
+        Task task2 = new Task(Type.TASK, "2", "22");
         taskManager.createNewTask(task1);
         taskManager.createNewTask(task2);
         taskManager.deleteTask(task1.getTaskId());
@@ -94,8 +95,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getTask() {
-        Task task1 = new Task("1", "11");
-        Task task2 = new Task("2", "22");
+        Task task1 = new Task(Type.TASK, "1", "11");
+        Task task2 = new Task(Type.TASK, "2", "22");
         taskManager.createNewTask(task1);
         taskManager.createNewTask(task2);
         assertEquals("1", taskManager.getTask(task1.getTaskId()).getName());
@@ -105,10 +106,10 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getSubtasksFromEpic() {
-        Epic epic = new Epic("1", "2");
+        Epic epic = new Epic(Type.EPIC, "1", "2");
         taskManager.createNewEpic(epic);
-        Subtask subtask1 = new Subtask("s1", "s1", epic.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         ArrayList<Subtask> subtasks = new ArrayList<>();
@@ -119,9 +120,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void updateEpic() {
-        Epic epic = new Epic("1", "2");
+        Epic epic = new Epic(Type.EPIC, "1", "2");
         taskManager.createNewEpic(epic);
-        Epic epicUpdated = new Epic("1u", "1u", epic.getTaskId());
+        Epic epicUpdated = new Epic(Type.EPIC, "1u", "1u", epic.getTaskId());
         taskManager.updateEpic(epicUpdated);
         assertEquals(epicUpdated.getName(), taskManager.getEpic(epicUpdated.getTaskId()).getName());
         assertEquals(epicUpdated.getDescription(), taskManager.getEpic(epicUpdated.getTaskId()).getDescription());
@@ -129,9 +130,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllEpics() {
-        Epic epic1 = new Epic("1", "1");
-        Epic epic2 = new Epic("2", "2");
-        Epic epic3 = new Epic("3", "3");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
+        Epic epic2 = new Epic(Type.EPIC, "2", "2");
+        Epic epic3 = new Epic(Type.EPIC, "3", "3");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
         taskManager.createNewEpic(epic3);
@@ -144,14 +145,14 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteAllEpics() {
-        Epic epic1 = new Epic("1", "1");
-        Epic epic2 = new Epic("2", "2");
-        Epic epic3 = new Epic("3", "3");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
+        Epic epic2 = new Epic(Type.EPIC, "2", "2");
+        Epic epic3 = new Epic(Type.EPIC, "3", "3");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
         taskManager.createNewEpic(epic3);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         assertEquals(3, taskManager.getAllEpics().size());
@@ -163,14 +164,14 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteEpic() {
-        Epic epic1 = new Epic("1", "1");
-        Epic epic2 = new Epic("2", "2");
-        Epic epic3 = new Epic("3", "3");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
+        Epic epic2 = new Epic(Type.EPIC, "2", "2");
+        Epic epic3 = new Epic(Type.EPIC, "3", "3");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
         taskManager.createNewEpic(epic3);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.deleteEpic(epic2.getTaskId());
@@ -184,8 +185,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getEpic() {
-        Epic epic1 = new Epic("1", "1");
-        Epic epic2 = new Epic("2", "2");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
+        Epic epic2 = new Epic(Type.EPIC, "2", "2");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
         assertEquals(epic1, taskManager.getEpic(epic1.getTaskId()));
@@ -194,11 +195,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void updateSubtask() {
-        Epic epic1 = new Epic("1", "1");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
         taskManager.createNewEpic(epic1);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
-        Subtask subtaskUpdated = new Subtask("u1", "u1", subtask1.getTaskId(), epic1.getTaskId());
+        Subtask subtaskUpdated = new Subtask(Type.SUBTASK, "u1", "u1", subtask1.getTaskId(), epic1.getTaskId());
         taskManager.updateSubtask(subtaskUpdated);
         assertEquals(subtaskUpdated.getName(), taskManager.getSubtask(subtask1.getTaskId()).getName());
         assertEquals(subtaskUpdated.getDescription(), taskManager.getSubtask(subtask1.getTaskId()).getDescription());
@@ -206,11 +207,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllSubtasks() {
-        Epic epic1 = new Epic("1", "1");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
         taskManager.createNewEpic(epic1);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic1.getTaskId());
-        Subtask subtask3 = new Subtask("s3", "s3", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask(Type.SUBTASK, "s3", "s3", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.createNewSubtask(subtask3);
@@ -223,11 +224,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteAllSubtasks() {
-        Epic epic1 = new Epic("1", "1");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
         taskManager.createNewEpic(epic1);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic1.getTaskId());
-        Subtask subtask3 = new Subtask("s3", "s3", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask(Type.SUBTASK, "s3", "s3", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.createNewSubtask(subtask3);
@@ -238,11 +239,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteSubtask() {
-        Epic epic1 = new Epic("1", "1");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
         taskManager.createNewEpic(epic1);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("s2", "s2", epic1.getTaskId());
-        Subtask subtask3 = new Subtask("s3", "s3", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask(Type.SUBTASK, "s3", "s3", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.createNewSubtask(subtask3);
@@ -254,9 +255,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getSubtask() {
-        Epic epic1 = new Epic("1", "1");
+        Epic epic1 = new Epic(Type.EPIC, "1", "1");
         taskManager.createNewEpic(epic1);
-        Subtask subtask1 = new Subtask("s1", "s1", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         assertNotNull(taskManager.getSubtask(subtask1.getTaskId()));
         assertEquals("s1", taskManager.getSubtask(subtask1.getTaskId()).getName());
@@ -265,7 +266,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void idNotConflict() {
-        Task task = new Task("1", "2", 23);
+        Task task = new Task(Type.TASK, "1", "2", 23);
         int id = taskManager.createNewTask(task);
         assertNotNull(taskManager.getTask(task.getTaskId()));
         assertEquals(id, taskManager.getTask(task.getTaskId()).getTaskId());
@@ -274,13 +275,13 @@ class InMemoryTaskManagerTest {
     @Test
     void tasksDeleteFromHistory() {
         TaskManager taskManager = Managers.getDefault();
-        Epic epic1 = new Epic("epic1", "epic1");
-        Epic epic2 = new Epic("epic2", "epic2");
+        Epic epic1 = new Epic(Type.EPIC, "epic1", "epic1");
+        Epic epic2 = new Epic(Type.EPIC, "epic2", "epic2");
         taskManager.createNewEpic(epic1);
         taskManager.createNewEpic(epic2);
-        Subtask subtask1 = new Subtask("sub1", "sub1", epic1.getTaskId());
-        Subtask subtask2 = new Subtask("sub2", "sub2", epic1.getTaskId());
-        Subtask subtask3 = new Subtask("sub3", "sub3", epic1.getTaskId());
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "sub1", "sub1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "sub2", "sub2", epic1.getTaskId());
+        Subtask subtask3 = new Subtask(Type.SUBTASK, "sub3", "sub3", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.createNewSubtask(subtask3);

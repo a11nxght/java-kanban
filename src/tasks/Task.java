@@ -8,23 +8,32 @@ public class Task {
     protected int taskId;
     protected Status status;
 
-    public Task(String name, String description, int taskId) {
+    protected final Type type;
+
+    public Type getType() {
+        return type;
+    }
+
+    public Task(Type type, String name, String description, int taskId) {
         this.name = name;
         this.description = description;
         this.taskId = taskId;
+        this.type = type;
     }
 
-    public Task(String name, String description, int taskId, Status status) {
+    public Task(Type type, String name, String description, int taskId, Status status) {
         this.taskId = taskId;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = type;
     }
 
-    public Task(String name, String description) {
+    public Task(Type type, String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.type = type;
     }
 
     public String getName() {
@@ -74,11 +83,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", taskId=" + taskId +
-                ", status=" + status +
-                '}';
+        return String.format("%d,%s,%s,%s,%s,", taskId, type, name, status, description);
     }
 }

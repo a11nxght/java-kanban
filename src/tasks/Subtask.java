@@ -3,8 +3,9 @@ package tasks;
 public class Subtask extends Task {
     private final int epicId;
 
-    public Subtask(String name, String description, int taskId, int epicId) {
-        super(name, description, taskId);
+
+    public Subtask(Type type, String name, String description, int taskId, int epicId) {
+        super(type, name, description, taskId);
         if (taskId != epicId) {
             this.epicId = epicId;
         } else {
@@ -12,8 +13,8 @@ public class Subtask extends Task {
         }
     }
 
-    public Subtask(String name, String description, int taskId, Status status, int epicId) {
-        super(name, description, taskId, status);
+    public Subtask(Type type, String name, String description, int taskId, Status status, int epicId) {
+        super(type, name, description, taskId, status);
         if (taskId != epicId) {
             this.epicId = epicId;
         } else {
@@ -21,8 +22,8 @@ public class Subtask extends Task {
         }
     }
 
-    public Subtask(String name, String description, int epicId) {
-        super(name, description);
+    public Subtask(Type type, String name, String description, int epicId) {
+        super(type, name, description);
         this.epicId = epicId;
     }
 
@@ -32,12 +33,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "epicId=" + epicId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", taskId=" + taskId +
-                ", status=" + status +
-                '}';
+        return String.format("%d,%s,%s,%s,%s,%d", taskId, type, name, status, description, epicId);
     }
+
 }
