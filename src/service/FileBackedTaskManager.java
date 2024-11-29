@@ -78,15 +78,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case SUBTASK:
                 Subtask subtask = new Subtask(type, values[2], values[4], Integer.parseInt(values[0]), status,
                         Integer.parseInt(values[5]));
-                for (Epic tempEpic : getAllEpics()) {
-                    if (tempEpic.getTaskId() == subtask.getEpicId()) {
-                        tempEpic.addSubtask(subtask.getTaskId());
-                        break;
-                    }
-                }
+                Epic subEpic = epicTasks.get(subtask.getEpicId());
+                subEpic.addSubtask(subtask.getTaskId());
                 return subtask;
         }
-
         return null;
     }
 
