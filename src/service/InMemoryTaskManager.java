@@ -2,9 +2,14 @@ package service;
 
 import tasks.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -152,6 +157,9 @@ public class InMemoryTaskManager implements TaskManager {
             subtaskTasks.put(taskId, subtask);
             Epic epic = epicTasks.get(subtask.getEpicId());
             epic.addSubtask(taskId);
+
+            updateEpicStatusAndTime(epic);
+
             return taskId;
         }
         System.out.println("Нет эпика с таким Id");
@@ -163,17 +171,42 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtaskTasks.containsValue(subtask)) {
             subtaskTasks.replace(subtask.getTaskId(), subtask);
             Epic epic = epicTasks.get(subtask.getEpicId());
-            updateEpicStatus(epic);
+            updateEpicStatusAndTime(epic);
         } else {
             System.out.println("Такой подзадачи нет.");
         }
     }
 
-    private void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatusAndTime(Epic epic) {
         if (epic.getSubtasks().isEmpty()) {
             epic.setStatus(Status.NEW);
+            epic.setStartTime(null);
+            epic.setDuration(Duration.ZERO);
             return;
         }
+
+        List<Subtask> epicSubTasks = subtaskTasks.values().stream()
+                .filter(subtask -> epic.getSubtasks().contains(subtask.getTaskId())).toList();
+
+        long epicDurationInSeconds = epicSubTasks.stream()
+                .map(Task::getDuration)
+                .map(Duration::getSeconds).mapToLong(value -> value).sum();
+
+        epic.setDuration(Duration.ofSeconds(epicDurationInSeconds));
+
+        if (epicSubTasks.stream().allMatch(subtask -> subtask.getStartTime() == null)) {
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+        } else {
+            epicSubTasks.stream().filter(subtask -> subtask.getStartTime() != null)
+                    .min(Comparator.comparing(Task::getStartTime))
+                    .ifPresent(subtask -> epic.setStartTime(subtask.getStartTime()));
+
+            epicSubTasks.stream().filter(subtask -> subtask.getStartTime() != null)
+                    .max(Comparator.comparing(Task::getStartTime))
+                    .ifPresent(subtask -> epic.setEndTime(subtask.getEndTime()));
+        }
+
         int doneSubtasks = 0;
         int newSubtasks = 0;
         for (Integer subtaskId : epic.getSubtasks()) {
@@ -202,7 +235,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         for (Epic epic : epicTasks.values()) {
             epic.deleteAllSubtasks();
-            updateEpicStatus(epic);
+            updateEpicStatusAndTime(epic);
         }
         deleteAllTasksFromHistoryManager(subtaskTasks);
         subtaskTasks.clear();
@@ -214,7 +247,7 @@ public class InMemoryTaskManager implements TaskManager {
             Subtask subtask = subtaskTasks.get(taskId);
             Epic epic = epicTasks.get(subtask.getEpicId());
             epic.deleteSubtask(taskId);
-            updateEpicStatus(epic);
+            updateEpicStatusAndTime(epic);
             historyManager.remove(taskId);
             subtaskTasks.remove(taskId);
         } else System.out.println("Подзадачи с таким Id нет.");

@@ -1,5 +1,10 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -8,7 +13,16 @@ public class Task {
     protected int taskId;
     protected Status status;
 
+    protected Duration duration;
+
+    protected LocalDateTime startTime;
+
+
     protected final Type type;
+
+    public LocalDateTime getEndTime(){
+        return startTime.plus(duration);
+    }
 
     public Type getType() {
         return type;
@@ -19,6 +33,7 @@ public class Task {
         this.description = description;
         this.taskId = taskId;
         this.type = type;
+        this.duration = Duration.ofMinutes(0);
     }
 
     public Task(Type type, String name, String description, int taskId, Status status) {
@@ -27,6 +42,7 @@ public class Task {
         this.description = description;
         this.status = status;
         this.type = type;
+        this.duration = Duration.ofMinutes(0);
     }
 
     public Task(Type type, String name, String description) {
@@ -34,6 +50,16 @@ public class Task {
         this.description = description;
         this.status = Status.NEW;
         this.type = type;
+        this.duration = Duration.ofMinutes(0);
+    }
+
+    public Task(Type type, String name, String description, Duration duration, LocalDateTime startTime) {
+        this.type = type;
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.status = Status.NEW;
     }
 
     public String getName() {
@@ -64,8 +90,24 @@ public class Task {
         return status;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     @Override
@@ -83,6 +125,10 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,", taskId, type, name, status, description);
+        String result = String.format("%d,%s,%s,%s,%s,,%d,", taskId, type, name, status, description, duration.toSeconds());
+        if (startTime != null) {
+            result += startTime.toEpochSecond(ZoneOffset.ofHours(3)) ;
+        }
+        return result;
     }
 }

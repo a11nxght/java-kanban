@@ -7,6 +7,8 @@ import tasks.Subtask;
 import tasks.Task;
 import tasks.Type;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,16 +16,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
     private TaskManager taskManager;
     private ArrayList<Integer> taskNumbers;
+    private LocalDateTime now;
 
     @BeforeEach
     void setUp() {
         taskManager = Managers.getDefault();
         taskNumbers = new ArrayList<>();
+        now = LocalDateTime.now();
     }
 
     @Test
     void createNewTask() {
         Task task1 = new Task(Type.TASK, "first", "first task");
+        task1.setStartTime(LocalDateTime.now());
+        task1.setDuration(Duration.ofSeconds(60));
         taskNumbers.add(taskManager.createNewTask(task1));
         assertNotEquals(0, task1.getTaskId());
     }
@@ -40,8 +46,11 @@ class InMemoryTaskManagerTest {
         Epic epic1 = new Epic(Type.EPIC, "third", "first epic");
         taskNumbers.add(taskManager.createNewEpic(epic1));
         Subtask subtask1 = new Subtask(Type.SUBTASK, "forth", "first subtask", epic1.getTaskId());
+        subtask1.setDuration(Duration.ofSeconds(60));
+        subtask1.setStartTime(now);
         taskNumbers.add(taskManager.createNewSubtask(subtask1));
         assertNotEquals(0, subtask1.getTaskId());
+        assertEquals(taskManager.getEpic(epic1.getTaskId()).getEndTime(), subtask1.getEndTime());
     }
 
     @Test
@@ -200,6 +209,8 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
         taskManager.createNewSubtask(subtask1);
         Subtask subtaskUpdated = new Subtask(Type.SUBTASK, "u1", "u1", subtask1.getTaskId(), epic1.getTaskId());
+        subtaskUpdated.setDuration(Duration.ofSeconds(68));
+        subtaskUpdated.setStartTime(now);
         taskManager.updateSubtask(subtaskUpdated);
         assertEquals(subtaskUpdated.getName(), taskManager.getSubtask(subtask1.getTaskId()).getName());
         assertEquals(subtaskUpdated.getDescription(), taskManager.getSubtask(subtask1.getTaskId()).getDescription());

@@ -1,5 +1,8 @@
 package service;
 
+import exceptions.ManagerSaveException;
+import exceptions.SetDurationException;
+import exceptions.SetLocalDateTimeException;
 import tasks.*;
 
 import java.io.BufferedWriter;
@@ -8,6 +11,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -41,6 +48,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     fileBackedTaskManager.subtaskTasks.put(task.getTaskId(), (Subtask) task);
                 }
             }
+            fileBackedTaskManager.epicTasks.values().forEach(fileBackedTaskManager::updateEpicStatusAndTime);
         } catch (IOException exception) {
             System.out.println("Ошибка при чтении файла.");
         }
@@ -49,7 +57,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(String.valueOf(path.getFileName())))) {
-            bufferedWriter.write("id,type,name,status,description,epic\n");
+            bufferedWriter.write("id,type,name,status,description,epic,duration,startTime\n");
             for (Task task : getAllTasks()) {
                 bufferedWriter.write(task.toString() + "\n");
             }
@@ -70,7 +78,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Type type = Type.valueOf(values[1]);
         switch (type) {
             case TASK:
-                return new Task(type, values[2], values[4], Integer.parseInt(values[0]), status);
+                Task task = new Task(type, values[2], values[4], Integer.parseInt(values[0]), status);
+                setDurationFromString(task, values[6]);
+                if (values.length == 8) {
+                    setLocalDateTimeFromString(task, values[7]);
+                }
+                return task;
             case EPIC:
                 Epic epic = new Epic(type, values[2], values[4], Integer.parseInt(values[0]));
                 epic.setStatus(status);
@@ -78,11 +91,37 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case SUBTASK:
                 Subtask subtask = new Subtask(type, values[2], values[4], Integer.parseInt(values[0]), status,
                         Integer.parseInt(values[5]));
+                setDurationFromString(subtask, values[6]);
+                if (values.length == 8) {
+                    setLocalDateTimeFromString(subtask, values[7]);
+                }
                 Epic subEpic = epicTasks.get(subtask.getEpicId());
                 subEpic.addSubtask(subtask.getTaskId());
                 return subtask;
         }
         return null;
+    }
+
+    private void setDurationFromString(Task task, String durationInSeconds) {
+        long seconds = 0;
+        try {
+            seconds = Long.parseLong(durationInSeconds);
+        } catch (NumberFormatException exception) {
+            throw new SetDurationException("Продолжительность задачи указана не в секундах");
+        }
+        task.setDuration(Duration.ofSeconds(seconds));
+    }
+
+    private void setLocalDateTimeFromString(Task task, String localDateTimeInSeconds) {
+        long seconds;
+        try {
+            seconds = Long.parseLong(localDateTimeInSeconds);
+        } catch (NumberFormatException e) {
+            throw new SetLocalDateTimeException("Время начала задачи указано не в секундах");
+        }
+        if (seconds != 0) {
+            task.setStartTime(LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.ofHours(3)));
+        }
     }
 
     @Override
