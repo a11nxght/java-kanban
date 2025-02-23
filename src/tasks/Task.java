@@ -18,8 +18,8 @@ public class Task {
 
     protected final Type type;
 
-    public LocalDateTime getEndTime(){
-        if (startTime != null){
+    public LocalDateTime getEndTime() {
+        if (startTime != null) {
             return startTime.plus(duration);
         }
         return null;
@@ -128,7 +128,7 @@ public class Task {
     public String toString() {
         String result = String.format("%d,%s,%s,%s,%s,,%d,", taskId, type, name, status, description, duration.toSeconds());
         if (startTime != null) {
-            result += startTime.toEpochSecond(ZoneOffset.ofHours(3)) ;
+            result += startTime.toEpochSecond(ZoneOffset.ofHours(3));
         }
         return result;
     }

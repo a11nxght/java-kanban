@@ -42,9 +42,9 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        String result =  String.format("%d,%s,%s,%s,%s,%d,%d,", taskId, type, name, status, description, epicId, duration.toSeconds());
+        String result = String.format("%d,%s,%s,%s,%s,%d,%d,", taskId, type, name, status, description, epicId, duration.toSeconds());
         if (startTime != null) {
-            result += startTime.toEpochSecond(ZoneOffset.ofHours(3)) ;
+            result += startTime.toEpochSecond(ZoneOffset.ofHours(3));
         }
         return result;
     }
