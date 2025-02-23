@@ -19,7 +19,10 @@ public class Task {
     protected final Type type;
 
     public LocalDateTime getEndTime(){
-        return startTime.plus(duration);
+        if (startTime != null){
+            return startTime.plus(duration);
+        }
+        return null;
     }
 
     public Type getType() {

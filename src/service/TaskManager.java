@@ -51,4 +51,6 @@ public interface TaskManager {
     Subtask getSubtask(int taskId);
 
     List<Task> getPrioritizedTasks();
+
+    boolean isTasksCross(Task task1, Task task2);
 }
