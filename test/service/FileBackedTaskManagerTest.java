@@ -11,19 +11,22 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
-    private FileBackedTaskManager taskManager;
+    //    private FileBackedTaskManager taskManager;
     private Path path;
 
+    @Override
+    public FileBackedTaskManager getTaskManager() {
+        return new FileBackedTaskManager(path);
+    }
 
     @BeforeEach
     void setUp() throws IOException {
-        Path path1 = File.createTempFile("data", null).toPath();
-        taskManager = new FileBackedTaskManager(path1);
-        path = path1;
+        path = File.createTempFile("data", null).toPath();
+        taskManager = getTaskManager();
 
     }
 
@@ -72,8 +75,8 @@ class FileBackedTaskManagerTest {
         taskManager.createNewSubtask(subtask3);
         subtask3.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask3);
-//        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
-        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(new File("D:\\Java_projects\\java-kanban\\data15301599386035049526.tmp"));
+        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
+//        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(new File("D:\\Java_projects\\java-kanban\\data15301599386035049526.tmp"));
         assertEquals(taskManager.getAllTasks(), fileBackedTaskManager.getAllTasks());
         assertEquals(taskManager.getAllEpics(), fileBackedTaskManager.getAllEpics());
         assertEquals(taskManager.getAllSubtasks(), fileBackedTaskManager.getAllSubtasks());
@@ -104,4 +107,15 @@ class FileBackedTaskManagerTest {
             assertEquals(subtask.getStartTime(), backSubtask.getStartTime());
         }
     }
+
+    @Test
+    void testException() {
+        assertDoesNotThrow(() -> {
+            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(File.createTempFile("data", null).toPath());
+            Task task1 = new Task(Type.TASK, "first", "first task");
+            fileBackedTaskManager.createNewTask(task1);
+        });
+    }
+
+
 }
