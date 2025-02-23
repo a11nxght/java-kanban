@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -103,13 +102,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void setDurationFromString(Task task, String durationInSeconds) {
-        long seconds = 0;
+        long seconds;
         try {
             seconds = Long.parseLong(durationInSeconds);
+            task.setDuration(Duration.ofSeconds(seconds));
         } catch (NumberFormatException exception) {
             throw new SetDurationException("Продолжительность задачи указана не в секундах");
         }
-        task.setDuration(Duration.ofSeconds(seconds));
     }
 
     private void setLocalDateTimeFromString(Task task, String localDateTimeInSeconds) {

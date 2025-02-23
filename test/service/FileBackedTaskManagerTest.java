@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,12 +18,6 @@ class FileBackedTaskManagerTest {
 
     private FileBackedTaskManager taskManager;
     private Path path;
-    private LocalDateTime now;
-    private DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
-    private LocalDateTime firstTime = LocalDateTime.parse("10:13 23.02.25", DATE_TIME_FORMATTER);
-    private LocalDateTime secondTime = LocalDateTime.parse("11:00 23.02.25", DATE_TIME_FORMATTER);
-    private LocalDateTime thirdTime = LocalDateTime.parse("22:46 23.02.25", DATE_TIME_FORMATTER);
-    private LocalDateTime fourthTime = LocalDateTime.parse("07:00 23.02.25", DATE_TIME_FORMATTER);
 
 
     @BeforeEach
@@ -31,7 +25,6 @@ class FileBackedTaskManagerTest {
         Path path1 = File.createTempFile("data", null).toPath();
         taskManager = new FileBackedTaskManager(path1);
         path = path1;
-        now = LocalDateTime.now();
 
     }
 
@@ -48,6 +41,11 @@ class FileBackedTaskManagerTest {
 
     @Test
     void fromString() {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
+        LocalDateTime firstTime = LocalDateTime.parse("10:13 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime secondTime = LocalDateTime.parse("11:00 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime thirdTime = LocalDateTime.parse("22:46 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime fourthTime = LocalDateTime.parse("07:00 23.02.25", DATE_TIME_FORMATTER);
         Task task1 = new Task(Type.TASK, "first", "first task");
         task1.setDuration(Duration.ofSeconds(100));
         task1.setStartTime(firstTime);

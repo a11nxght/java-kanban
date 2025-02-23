@@ -9,7 +9,10 @@ import tasks.Type;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -212,6 +215,13 @@ class InMemoryTaskManagerTest {
         subtaskUpdated.setDuration(Duration.ofSeconds(68));
         subtaskUpdated.setStartTime(now);
         taskManager.updateSubtask(subtaskUpdated);
+
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
+        taskManager.createNewSubtask(subtask2);
+        Subtask subtaskUpdated2 = new Subtask(Type.SUBTASK, "u1", "u1", subtask1.getTaskId(), epic1.getTaskId());
+        subtaskUpdated2.setDuration(Duration.ofSeconds(68));
+        taskManager.updateSubtask(subtaskUpdated2);
+
         assertEquals(subtaskUpdated.getName(), taskManager.getSubtask(subtask1.getTaskId()).getName());
         assertEquals(subtaskUpdated.getDescription(), taskManager.getSubtask(subtask1.getTaskId()).getDescription());
     }
@@ -312,5 +322,37 @@ class InMemoryTaskManagerTest {
         taskManager.deleteEpic(epic1.getTaskId());
         assertEquals(1, taskManager.getHistory().size());
         assertEquals(epic2, taskManager.getHistory().getFirst());
+    }
+
+    @Test
+    void getPrioritizedTasks() {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
+        LocalDateTime firstTime = LocalDateTime.parse("07:13 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime secondTime = LocalDateTime.parse("11:00 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime thirdTime = LocalDateTime.parse("22:46 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime fourthTime = LocalDateTime.parse("23:04 23.02.25", DATE_TIME_FORMATTER);
+        Task task1 = new Task(Type.TASK, "first", "first task");
+        task1.setDuration(Duration.ofSeconds(100));
+        task1.setStartTime(firstTime);
+        Task task2 = new Task(Type.TASK, "second", "second task");
+        task2.setDuration(Duration.ofSeconds(100));
+        task2.setStartTime(thirdTime);
+        taskManager.createNewTask(task2);
+        taskManager.createNewTask(task1);
+        Epic epic1 = new Epic(Type.EPIC, "1", "2");
+        taskManager.createNewEpic(epic1);
+        Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
+        Subtask subtask2 = new Subtask(Type.SUBTASK, "s2", "s2", epic1.getTaskId());
+        subtask1.setDuration(Duration.ofSeconds(170));
+        subtask2.setDuration(Duration.ofSeconds(111));
+        subtask1.setStartTime(secondTime);
+        subtask2.setStartTime(fourthTime);
+        taskManager.createNewSubtask(subtask1);
+        taskManager.createNewSubtask(subtask2);
+        List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
+        assertEquals(firstTime.toEpochSecond(ZoneOffset.ofHours(3)), prioritizedTasks.getFirst().getStartTime().toEpochSecond(ZoneOffset.ofHours(3)));
+        assertEquals(secondTime.toEpochSecond(ZoneOffset.ofHours(3)), prioritizedTasks.get(1).getStartTime().toEpochSecond(ZoneOffset.ofHours(3)));
+        assertEquals(thirdTime.toEpochSecond(ZoneOffset.ofHours(3)), prioritizedTasks.get(2).getStartTime().toEpochSecond(ZoneOffset.ofHours(3)));
+        assertEquals(fourthTime.toEpochSecond(ZoneOffset.ofHours(3)), prioritizedTasks.get(3).getStartTime().toEpochSecond(ZoneOffset.ofHours(3)));
     }
 }
