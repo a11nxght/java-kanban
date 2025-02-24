@@ -6,6 +6,7 @@ import tasks.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @BeforeEach
     void setUp() throws IOException {
-        path = File.createTempFile("data", null).toPath();
+        path = Files.createTempFile("data", null);
         taskManager = getTaskManager();
 
     }
@@ -44,18 +45,18 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     void fromString() {
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
-//        LocalDateTime firstTime = LocalDateTime.parse("10:13 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime firstTime = LocalDateTime.parse("10:13 23.02.25", DATE_TIME_FORMATTER);
         LocalDateTime secondTime = LocalDateTime.parse("11:00 23.02.25", DATE_TIME_FORMATTER);
-//        LocalDateTime thirdTime = LocalDateTime.parse("22:46 23.02.25", DATE_TIME_FORMATTER);
+        LocalDateTime thirdTime = LocalDateTime.parse("22:46 23.02.25", DATE_TIME_FORMATTER);
         LocalDateTime fourthTime = LocalDateTime.parse("07:00 23.02.25", DATE_TIME_FORMATTER);
-//        Task task1111 = new Task(Type.TASK, "t1", "t11");
-//        task1111.setDuration(Duration.ofSeconds(100));
-//        task1111.setStartTime(firstTime);
-//        Task task222 = new Task(Type.TASK, "t2", "t22");
-//        task222.setDuration(Duration.ofSeconds(100));
-//        task222.setStartTime(thirdTime);
-//        taskManager.createNewTask(task1111);
-//        taskManager.createNewTask(task222);
+        Task task1111 = new Task(Type.TASK, "t1", "t11");
+        task1111.setDuration(Duration.ofSeconds(100));
+        task1111.setStartTime(firstTime);
+        Task task222 = new Task(Type.TASK, "t2", "t22");
+        task222.setDuration(Duration.ofSeconds(100));
+        task222.setStartTime(thirdTime);
+        taskManager.createNewTask(task1111);
+        taskManager.createNewTask(task222);
         Epic epic1 = new Epic(Type.EPIC, "1", "2");
         taskManager.createNewEpic(epic1);
         Subtask subtask1 = new Subtask(Type.SUBTASK, "s1", "s1", epic1.getTaskId());
@@ -74,8 +75,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.createNewSubtask(subtask3);
         subtask3.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask3);
-        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
-//        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(new File("D:\\Java_projects\\java-kanban\\data5301599386035049526.tmp"));
+//        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
+        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(new File("fileForTests.tmp"));
         assertEquals(taskManager.getAllTasks(), fileBackedTaskManager.getAllTasks());
         assertEquals(taskManager.getAllEpics(), fileBackedTaskManager.getAllEpics());
         assertEquals(taskManager.getAllSubtasks(), fileBackedTaskManager.getAllSubtasks());
