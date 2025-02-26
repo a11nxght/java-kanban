@@ -26,7 +26,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task2);
         historyManager.add(task3);
         assertEquals(task1.getName(), historyManager.getHistory().getFirst().getName());
-        assertEquals(historyManager.getHistory().size(), 3);
+        assertEquals(3, historyManager.getHistory().size());
         assertEquals(historyManager.getHistory().getLast(), task3);
     }
 
@@ -36,17 +36,23 @@ class InMemoryHistoryManagerTest {
         Task task2 = new Task(Type.TASK, "t2", "t2", 2);
         Task task3 = new Task(Type.TASK, "t3", "t3", 3);
         historyManager.add(task1);
-        assertEquals(historyManager.getHistory().size(), 1);
+        assertEquals(1, historyManager.getHistory().size());
         historyManager.remove(task1.getTaskId());
-        assertEquals(historyManager.getHistory().size(), 0);
+        assertEquals(0, historyManager.getHistory().size());
 
         historyManager.add(task1);
         task1.setName("t1t1");
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
-        assertEquals(historyManager.getHistory().size(), 3);
+        assertEquals(3, historyManager.getHistory().size());
         historyManager.remove(task1.getTaskId());
         assertEquals(historyManager.getHistory().getFirst().getTaskId(), task2.getTaskId());
+        historyManager.add(task1);
+        historyManager.remove(task3.getTaskId());
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(historyManager.getHistory().getLast().getTaskId(), task1.getTaskId());
+        historyManager.remove(task1.getTaskId());
+        assertEquals(1, historyManager.getHistory().size());
     }
 }
