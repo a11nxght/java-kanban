@@ -30,7 +30,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             if (data.isEmpty()) {
                 return fileBackedTaskManager;
             }
-            String[] dataArray = data.split("\n");
+            String[] dataArray = data.split("\\r\\n|\\r|\\n");
             for (int i = 1; i < dataArray.length; i++) {
                 Task task = fileBackedTaskManager.fromString(dataArray[i]);
                 if (task == null) {
@@ -48,6 +48,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
             fileBackedTaskManager.epicTasks.values().forEach(fileBackedTaskManager::updateEpicStatusAndTime);
+            fileBackedTaskManager.taskTasks.values().stream()
+                    .filter(task -> task.getStartTime() != null).forEach(fileBackedTaskManager.prioritizedTasks::add);
+            fileBackedTaskManager.subtaskTasks.values().stream()
+                    .filter(subtask -> subtask.getStartTime() != null).forEach(fileBackedTaskManager.prioritizedTasks::add);
         } catch (IOException exception) {
             System.out.println("Ошибка при чтении файла.");
         }

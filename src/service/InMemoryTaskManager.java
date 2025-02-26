@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Epic> epicTasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> subtaskTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     @Override
     public List<Task> getHistory() {
@@ -49,17 +49,35 @@ public class InMemoryTaskManager implements TaskManager {
             int taskId = task.getTaskId();
             Task oldTask = taskTasks.get(taskId);
             if (oldTask.getStartTime() != null) {
-                prioritizedTasks.remove(oldTask);
-            }
-            if (task.getStartTime() != null) {
-                if (getPrioritizedTasks().stream().noneMatch(task1 -> isTasksCross(task, task1))) {
-                    taskTasks.replace(taskId, task);
-                    prioritizedTasks.add(task);
+                if (task.getStartTime() != null) {
+                    if (oldTask.getStartTime() != task.getStartTime() || oldTask.getDuration() != task.getDuration()) {
+                        if (getPrioritizedTasks().stream()
+                                .filter(task1 -> task1 != oldTask)
+                                .noneMatch(task1 -> isTasksCross(task1, task))) {
+                            prioritizedTasks.remove(oldTask);
+                            prioritizedTasks.add(task);
+                            taskTasks.replace(taskId, task);
+                        } else {
+                            System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                        }
+                    } else {
+                        taskTasks.replace(taskId, task);
+                    }
                 } else {
-                    System.out.println("Задачи пересекаются");
+                    prioritizedTasks.remove(oldTask);
+                    taskTasks.replace(taskId, task);
                 }
             } else {
-                taskTasks.replace(taskId, task);
+                if (task.getStartTime() != null) {
+                    if (prioritizedTasks.stream().noneMatch(task1 -> isTasksCross(task1, task))) {
+                        prioritizedTasks.add(task);
+                        taskTasks.replace(taskId, task);
+                    } else {
+                        System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                    }
+                } else {
+                    taskTasks.replace(taskId, task);
+                }
             }
         } else {
             System.out.println("Такой задачи нет.");
@@ -186,7 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
                     return taskId;
                 } else {
                     System.out.println("Задачи пересекаются");
-                    return 0;
+                    return -1;
                 }
             }
             subtask.setTaskId(++taskId);
@@ -205,31 +223,53 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtaskTasks.containsValue(subtask)) {
             Subtask oldSubTask = subtaskTasks.get(subtask.getTaskId());
             if (oldSubTask.getStartTime() != null) {
-                prioritizedTasks.remove(oldSubTask);
-            }
-            if (subtask.getStartTime() != null) {
-                if (getPrioritizedTasks().stream().noneMatch(task -> isTasksCross(subtask, task))) {
-                    subtaskTasks.replace(subtask.getTaskId(), subtask);
-                    Epic epic = epicTasks.get(subtask.getEpicId());
-                    updateEpicStatusAndTime(epic);
-                    prioritizedTasks.add(subtask);
+                if (subtask.getStartTime() != null) {
+                    if (oldSubTask.getStartTime() != subtask.getStartTime()
+                            || oldSubTask.getDuration() != subtask.getDuration()) {
+                        if (getPrioritizedTasks().stream()
+                                .filter(task -> task != subtask)
+                                .noneMatch(task -> isTasksCross(task, subtask))) {
+                            prioritizedTasks.remove(oldSubTask);
+                            prioritizedTasks.add(subtask);
+                            replaceSubtaskAndUpdateEpic(subtask);
+                        } else {
+                            System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                        }
+                    } else {
+                        replaceSubtaskAndUpdateEpic(subtask);
+                    }
                 } else {
-                    System.out.println("Задачи пересекаются");
+                    prioritizedTasks.remove(oldSubTask);
+                    replaceSubtaskAndUpdateEpic(subtask);
                 }
             } else {
-                subtaskTasks.replace(subtask.getTaskId(), subtask);
-                Epic epic = epicTasks.get(subtask.getEpicId());
-                updateEpicStatusAndTime(epic);
+                if (subtask.getStartTime() != null) {
+                    if (prioritizedTasks.stream().noneMatch(task -> isTasksCross(task, subtask))) {
+                        prioritizedTasks.add(subtask);
+                        replaceSubtaskAndUpdateEpic(subtask);
+                    } else {
+                        System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                    }
+                } else {
+                    replaceSubtaskAndUpdateEpic(subtask);
+                }
             }
         } else {
             System.out.println("Такой подзадачи нет.");
         }
     }
 
+    private void replaceSubtaskAndUpdateEpic(Subtask subtask) {
+        subtaskTasks.replace(subtask.getTaskId(), subtask);
+        Epic epic = epicTasks.get(subtask.getEpicId());
+        updateEpicStatusAndTime(epic);
+    }
+
     protected void updateEpicStatusAndTime(Epic epic) {
         if (epic.getSubtasks().isEmpty()) {
             epic.setStatus(Status.NEW);
             epic.setStartTime(null);
+            epic.setEndTime(null);
             epic.setDuration(Duration.ZERO);
             return;
         }
@@ -280,10 +320,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubtasks() {
         epicTasks.values().forEach(epic -> {
+
             epic.deleteAllSubtasks();
             updateEpicStatusAndTime(epic);
         });
         deleteAllTasksFromHistoryManager(subtaskTasks);
+        subtaskTasks.values().stream()
+                .filter(subtask -> subtask.getStartTime() != null)
+                .forEach(prioritizedTasks::remove);
         subtaskTasks.clear();
     }
 
@@ -295,7 +339,9 @@ public class InMemoryTaskManager implements TaskManager {
             epic.deleteSubtask(taskId);
             updateEpicStatusAndTime(epic);
             historyManager.remove(taskId);
-            prioritizedTasks.remove(subtaskTasks.get(taskId));
+            if (subtask.getStartTime() != null) {
+                prioritizedTasks.remove(subtask);
+            }
             subtaskTasks.remove(taskId);
         } else System.out.println("Подзадачи с таким Id нет.");
     }
@@ -318,8 +364,7 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks.stream().toList();
     }
 
-    @Override
-    public boolean isTasksCross(Task task1, Task task2) {
+    private boolean isTasksCross(Task task1, Task task2) {
         LocalDateTime task1Start = task1.getStartTime();
         LocalDateTime task2Start = task2.getStartTime();
         LocalDateTime task1Finish = task1.getEndTime();

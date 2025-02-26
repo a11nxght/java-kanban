@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
-    //    private FileBackedTaskManager taskManager;
     private Path path;
 
     @Override
@@ -75,7 +74,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.createNewSubtask(subtask3);
         subtask3.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask3);
-//        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(path.toFile());
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(new File("fileForTests.tmp"));
         assertEquals(taskManager.getAllTasks(), fileBackedTaskManager.getAllTasks());
         assertEquals(taskManager.getAllEpics(), fileBackedTaskManager.getAllEpics());
@@ -96,6 +94,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             assertEquals(epic.getSubtasks(), backEpic.getSubtasks());
             assertEquals(epic.getDuration(), backEpic.getDuration());
             assertEquals(epic.getStartTime(), backEpic.getStartTime());
+            assertEquals(epic.getEndTime(), backEpic.getEndTime());
         }
         for (Subtask subtask : taskManager.getAllSubtasks()) {
             Subtask backSubtask = fileBackedTaskManager.getSubtask(subtask.getTaskId());

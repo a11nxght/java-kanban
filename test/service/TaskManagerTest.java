@@ -382,11 +382,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task2 = new Task(Type.TASK, "second", "second task");
         task2.setDuration(Duration.ofSeconds(100));
         task2.setStartTime(secondTime);
-        assertFalse(taskManager.isTasksCross(task1, task2));
-        assertFalse(taskManager.isTasksCross(task2, task1));
+        taskManager.createNewTask(task1);
+        taskManager.createNewTask(task2);
+        assertEquals(2, taskManager.getPrioritizedTasks().size());
+        taskManager.deleteAllTasks();
         task1.setStartTime(LocalDateTime.parse("07:00 23.02.25", DATE_TIME_FORMATTER));
         task2.setStartTime(LocalDateTime.parse("07:01 23.02.25", DATE_TIME_FORMATTER));
-        assertTrue(taskManager.isTasksCross(task1, task2));
-        assertTrue(taskManager.isTasksCross(task2, task1));
+        taskManager.createNewTask(task1);
+        taskManager.createNewTask(task2);
+        assertEquals(1, taskManager.getPrioritizedTasks().size());
     }
 }
