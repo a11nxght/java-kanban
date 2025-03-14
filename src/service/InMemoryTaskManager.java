@@ -1,5 +1,7 @@
 package service;
 
+import exceptions.NotFoundException;
+import exceptions.TasksOverlapException;
 import tasks.*;
 
 import java.time.Duration;
@@ -59,6 +61,7 @@ public class InMemoryTaskManager implements TaskManager {
                             taskTasks.replace(taskId, task);
                         } else {
                             System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                            throw new TasksOverlapException("Нельзя обновить задачу. Задачи пересекаются");
                         }
                     } else {
                         taskTasks.replace(taskId, task);
@@ -74,6 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
                         taskTasks.replace(taskId, task);
                     } else {
                         System.out.println("Нельзя обновить задачу. Задачи пересекаются");
+                        throw new TasksOverlapException("Нельзя обновить задачу. Задачи пересекаются");
                     }
                 } else {
                     taskTasks.replace(taskId, task);
@@ -81,6 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         } else {
             System.out.println("Такой задачи нет.");
+            throw new NotFoundException("Такой задачи нет");
         }
     }
 
@@ -98,9 +103,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int taskId) {
-        historyManager.remove(taskId);
-        prioritizedTasks.remove(taskTasks.get(taskId));
-        taskTasks.remove(taskId);
+        if (taskTasks.containsKey(taskId)){
+            historyManager.remove(taskId);
+            prioritizedTasks.remove(taskTasks.get(taskId));
+            taskTasks.remove(taskId);
+        } else {
+            throw new NotFoundException("Задачи с таким ID нет");
+        }
     }
 
     @Override
@@ -112,7 +121,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(taskForHistory);
             return taskTasks.get(taskId);
         }
-        return null;
+        throw new NotFoundException("Задачи с таким ID нет");
     }
 
     //epic
