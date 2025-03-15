@@ -11,6 +11,7 @@ import tasks.Subtask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler {
 
@@ -56,6 +57,9 @@ public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler 
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Subtask subtask = gson.fromJson(body, Subtask.class);
+        if (subtask.getDuration() == null){
+            subtask.setDuration(Duration.ZERO);
+        }
         if (subtask.getTaskId() == 0) {
             try {
                 taskManager.createNewSubtask(subtask);

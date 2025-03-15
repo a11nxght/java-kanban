@@ -10,12 +10,8 @@ public class Task {
     protected String description;
     protected int taskId;
     protected Status status;
-
     protected Duration duration;
-
     protected LocalDateTime startTime;
-
-
     protected final Type type;
 
     public LocalDateTime getEndTime() {

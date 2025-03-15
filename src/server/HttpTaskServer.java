@@ -32,17 +32,10 @@ public class HttpTaskServer {
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new HttpTasksHandler(taskManager));
         httpServer.createContext("/subtasks", new HttpSubtasksHandler(taskManager));
-        httpServer.createContext("/epics", new EpicsHandler());
+        httpServer.createContext("/epics", new HttpEpicsHandler(taskManager));
         httpServer.createContext("/history", new HistoryHandler());
         httpServer.createContext("/prioritized", new PrioritizedHandler());
         httpServer.start();
-    }
-}
-
-class EpicsHandler implements HttpHandler {
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-
     }
 }
 

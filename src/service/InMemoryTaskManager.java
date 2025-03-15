@@ -127,13 +127,14 @@ public class InMemoryTaskManager implements TaskManager {
     //epic
     @Override
     public ArrayList<Subtask> getSubtasksFromEpic(int epicTaskId) {
-        List<Subtask> subtasks = new ArrayList<>();
+        List<Subtask> subtasks;
         if (epicTasks.containsKey(epicTaskId)) {
             subtasks = epicTasks.get(epicTaskId).getSubtasks().stream()
                     .map(subtaskTasks::get).toList();
+            return new ArrayList<>(subtasks);
 
         }
-        return new ArrayList<>(subtasks);
+        throw new NotFoundException("Нет эпика с таким Id");
     }
 
     @Override
@@ -182,7 +183,9 @@ public class InMemoryTaskManager implements TaskManager {
             });
             historyManager.remove(taskId);
             epicTasks.remove(taskId);
-        } else System.out.println("Нет эпика с таким Id");
+        } else {
+            throw new NotFoundException("Нет эпика с таким Id");
+        }
     }
 
     @Override
@@ -195,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(epicForHistory);
             return epicTasks.get(taskId);
         }
-        return null;
+        throw new NotFoundException("Нет эпика с таким Id");
     }
 
     //subtask
