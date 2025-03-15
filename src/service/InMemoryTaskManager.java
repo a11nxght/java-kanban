@@ -103,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int taskId) {
-        if (taskTasks.containsKey(taskId)){
+        if (taskTasks.containsKey(taskId)) {
             historyManager.remove(taskId);
             prioritizedTasks.remove(taskTasks.get(taskId));
             taskTasks.remove(taskId);

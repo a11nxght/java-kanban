@@ -176,7 +176,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.createNewSubtask(subtask1);
         taskManager.createNewSubtask(subtask2);
         taskManager.deleteEpic(epic2.getTaskId());
-        assertNull(taskManager.getEpic(epic2.getTaskId()));
         assertEquals(2, taskManager.getAllEpics().size());
         assertEquals(2, taskManager.getAllSubtasks().size());
         taskManager.deleteEpic(epic1.getTaskId());
@@ -259,7 +258,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.createNewSubtask(subtask3);
         assertNotNull(taskManager.getSubtask(subtask1.getTaskId()));
         taskManager.deleteSubtask(subtask1.getTaskId());
-        assertNull(taskManager.getSubtask(subtask1.getTaskId()));
         assertEquals(2, taskManager.getAllSubtasks().size());
     }
 

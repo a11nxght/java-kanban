@@ -57,7 +57,7 @@ public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler 
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Subtask subtask = gson.fromJson(body, Subtask.class);
-        if (subtask.getDuration() == null){
+        if (subtask.getDuration() == null) {
             subtask.setDuration(Duration.ZERO);
         }
         if (subtask.getTaskId() == 0) {

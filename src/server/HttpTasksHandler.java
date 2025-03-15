@@ -58,7 +58,7 @@ public class HttpTasksHandler extends BaseHttpHandler implements HttpHandler {
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(body, Task.class);
-        if (task.getDuration() == null){
+        if (task.getDuration() == null) {
             task.setDuration(Duration.ZERO);
         }
         if (task.getTaskId() == 0) {

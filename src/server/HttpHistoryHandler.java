@@ -20,8 +20,7 @@ public class HttpHistoryHandler extends BaseHttpHandler implements HttpHandler {
             Gson gson = makeGson();
             String historyJson = gson.toJson(taskManager.getHistory());
             sendText(exchange, historyJson);
-        }
-        else {
+        } else {
             sendMessage(exchange, "Такого эндпоинта не существует", 404);
         }
     }
