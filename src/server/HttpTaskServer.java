@@ -20,17 +20,7 @@ public class HttpTaskServer {
         this.taskManager = taskManager;
     }
 
-    public static void main(String[] args) throws IOException {
-//        taskManager.createNewTask(new Task(Type.TASK, "task1", "test", Duration.ZERO, LocalDateTime.now()));
-//        Task task = new Task(Type.TASK, "task2", "test2", Duration.ZERO, LocalDateTime.now());
-//        taskManager.createNewTask(task);
-//        taskManager.createNewEpic(new Epic(Type.EPIC, "epic1", "epic1"));
-//        taskManager.createNewSubtask(new Subtask(Type.SUBTASK, "subtask1", "subtask1", 3));
-//        taskManager.getTask(1);
-//        taskManager.getSubtask(4);
-//        taskManager.getEpic(3);
-//        taskManager.getTask(2);
-
+    public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
         HttpTaskServer taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
