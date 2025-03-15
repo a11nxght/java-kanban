@@ -11,7 +11,7 @@ public class Task {
     protected int taskId;
     protected Status status;
 
-    protected Duration duration = Duration.ZERO;
+    protected Duration duration;
 
     protected LocalDateTime startTime;
 
