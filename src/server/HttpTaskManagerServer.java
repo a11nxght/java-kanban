@@ -39,23 +39,7 @@ public class HttpTaskManagerServer {
         httpServer.createContext("/subtasks", new HttpSubtasksHandler(taskManager));
         httpServer.createContext("/epics", new HttpEpicsHandler(taskManager));
         httpServer.createContext("/history", new HttpHistoryHandler(taskManager));
-        httpServer.createContext("/prioritized", new PrioritizedHandler());
+        httpServer.createContext("/prioritized", new HttpPrioritizedHandler(taskManager));
         httpServer.start();
     }
 }
-
-class HistoryHandler implements HttpHandler {
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-
-    }
-}
-
-class PrioritizedHandler implements HttpHandler {
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-
-    }
-}
-
-
