@@ -62,5 +62,11 @@ class BaseHttpHandler {
                 .create();
     }
 
-    enum Endpoint {GET_ALL, GET_ID, POST, DELETE, UNKNOWN}
+    enum Endpoint {
+        GET_ALL,
+        GET_ID,
+        POST,
+        DELETE,
+        UNKNOWN
+    }
 }
