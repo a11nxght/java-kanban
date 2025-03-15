@@ -16,7 +16,7 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class HttpTaskServer {
+public class HttpTaskManagerServer {
     private static final int PORT = 8080;
 
 
@@ -27,13 +27,18 @@ public class HttpTaskServer {
         taskManager.createNewTask(task);
         taskManager.createNewEpic(new Epic(Type.EPIC, "epic1", "epic1"));
         taskManager.createNewSubtask(new Subtask(Type.SUBTASK, "subtask1", "subtask1", 3));
+        taskManager.getTask(1);
+        taskManager.getSubtask(4);
+        taskManager.getEpic(3);
+        taskManager.getTask(2);
+
 
         HttpServer httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new HttpTasksHandler(taskManager));
         httpServer.createContext("/subtasks", new HttpSubtasksHandler(taskManager));
         httpServer.createContext("/epics", new HttpEpicsHandler(taskManager));
-        httpServer.createContext("/history", new HistoryHandler());
+        httpServer.createContext("/history", new HttpHistoryHandler(taskManager));
         httpServer.createContext("/prioritized", new PrioritizedHandler());
         httpServer.start();
     }
