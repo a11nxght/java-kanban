@@ -1,4 +1,4 @@
-package server;
+package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -13,10 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 public class HttpEpicsHandler extends BaseHttpHandler implements HttpHandler {
-    private final TaskManager taskManager;
 
-    public HttpEpicsHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+    public HttpEpicsHandler(TaskManager taskManager, Gson gson) {
+        super(taskManager, gson);
     }
 
     @Override
@@ -32,7 +31,6 @@ public class HttpEpicsHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleGetEpics(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         String epicsJson = gson.toJson(taskManager.getAllEpics());
         sendText(exchange, epicsJson);
     }
@@ -42,7 +40,6 @@ public class HttpEpicsHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 3) {
             try {
                 Epic epic = taskManager.getEpic(Integer.parseInt(pathParts[2]));
-                Gson gson = makeGson();
                 String epicJson = gson.toJson(epic);
                 sendText(exchange, epicJson);
             } catch (NumberFormatException | NotFoundException exception) {
@@ -51,7 +48,6 @@ public class HttpEpicsHandler extends BaseHttpHandler implements HttpHandler {
         } else {
             if (pathParts[3].equals("subtasks")) {
                 try {
-                    Gson gson = makeGson();
                     int epicId = Integer.parseInt(pathParts[2]);
                     String epicSubtasksJson = gson.toJson(taskManager.getSubtasksFromEpic(epicId));
                     sendText(exchange, epicSubtasksJson);
@@ -65,10 +61,13 @@ public class HttpEpicsHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handlePostCreateEpic(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Epic epic = gson.fromJson(body, Epic.class);
+        if (epic == null) {
+            sendMessage(exchange, "Ошибка. Пустое тело запроса", 400);
+            return;
+        }
         if (epic.getDuration() == null) {
             epic.setDuration(Duration.ZERO);
         }

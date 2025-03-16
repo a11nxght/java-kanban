@@ -1,15 +1,30 @@
-package server;
+package handlers;
 
+import adapter.DurationAdapter;
+import adapter.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import service.TaskManager;
+import tasks.Task;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-class BaseHttpHandler {
+abstract class BaseHttpHandler {
+
+    protected final TaskManager taskManager;
+    protected final Gson gson;
+
+    BaseHttpHandler(TaskManager taskManager, Gson gson) {
+        this.taskManager = taskManager;
+        this.gson = gson;
+    }
+
     protected void sendText(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
@@ -53,13 +68,6 @@ class BaseHttpHandler {
             }
         }
         return Endpoint.UNKNOWN;
-    }
-
-    protected Gson makeGson() {
-        return new GsonBuilder().setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
     }
 
     enum Endpoint {

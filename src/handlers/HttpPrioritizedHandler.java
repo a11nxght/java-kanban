@@ -1,4 +1,4 @@
-package server;
+package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -7,19 +7,18 @@ import service.TaskManager;
 
 import java.io.IOException;
 
-public class HttpHistoryHandler extends BaseHttpHandler implements HttpHandler {
-    private final TaskManager taskManager;
+public class HttpPrioritizedHandler extends BaseHttpHandler implements HttpHandler {
 
-    public HttpHistoryHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+    public HttpPrioritizedHandler(TaskManager taskManager, Gson gson) {
+        super(taskManager, gson);
     }
+
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals("GET")) {
-            Gson gson = makeGson();
-            String historyJson = gson.toJson(taskManager.getHistory());
-            sendText(exchange, historyJson);
+            String prioritizedTasksJson = gson.toJson(taskManager.getPrioritizedTasks());
+            sendText(exchange, prioritizedTasksJson);
         } else {
             sendMessage(exchange, "Такого эндпоинта не существует", 404);
         }

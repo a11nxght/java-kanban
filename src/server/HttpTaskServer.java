@@ -1,8 +1,11 @@
 package server;
 
+import adapter.DurationAdapter;
+import adapter.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
+import handlers.*;
 import service.Managers;
 import service.TaskManager;
 
@@ -22,19 +25,21 @@ public class HttpTaskServer {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
+
         HttpTaskServer taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
     }
 
     public void start() {
         try {
+            Gson gson = getGson();
             httpServer = HttpServer.create();
             httpServer.bind(new InetSocketAddress(PORT), 0);
-            httpServer.createContext("/tasks", new HttpTasksHandler(taskManager));
-            httpServer.createContext("/subtasks", new HttpSubtasksHandler(taskManager));
-            httpServer.createContext("/epics", new HttpEpicsHandler(taskManager));
-            httpServer.createContext("/history", new HttpHistoryHandler(taskManager));
-            httpServer.createContext("/prioritized", new HttpPrioritizedHandler(taskManager));
+            httpServer.createContext("/tasks", new HttpTasksHandler(taskManager, gson));
+            httpServer.createContext("/subtasks", new HttpSubtasksHandler(taskManager, gson));
+            httpServer.createContext("/epics", new HttpEpicsHandler(taskManager, gson));
+            httpServer.createContext("/history", new HttpHistoryHandler(taskManager, gson));
+            httpServer.createContext("/prioritized", new HttpPrioritizedHandler(taskManager, gson));
             httpServer.start();
         } catch (IOException e) {
             throw new RuntimeException(e);

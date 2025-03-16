@@ -1,4 +1,4 @@
-package server;
+package handlers;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -15,12 +15,10 @@ import java.time.Duration;
 
 public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final TaskManager taskManager;
 
-    public HttpSubtasksHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+    public HttpSubtasksHandler(TaskManager taskManager, Gson gson) {
+        super(taskManager, gson);
     }
-
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -35,7 +33,6 @@ public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler 
     }
 
     private void handleGetSubtasks(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         String subtasksJson = gson.toJson(taskManager.getAllSubtasks());
         sendText(exchange, subtasksJson);
     }
@@ -44,7 +41,6 @@ public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler 
         String pathPart = exchange.getRequestURI().getPath().split("/")[2];
         try {
             Subtask subtask = taskManager.getSubtask(Integer.parseInt(pathPart));
-            Gson gson = makeGson();
             String subtaskJson = gson.toJson(subtask);
             sendText(exchange, subtaskJson);
         } catch (NumberFormatException | NotFoundException exception) {
@@ -53,10 +49,13 @@ public class HttpSubtasksHandler extends BaseHttpHandler implements HttpHandler 
     }
 
     private void handlePostCreateSubtask(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Subtask subtask = gson.fromJson(body, Subtask.class);
+        if (subtask == null) {
+            sendMessage(exchange, "Ошибка. Пустое тело запроса", 400);
+            return;
+        }
         if (subtask.getDuration() == null) {
             subtask.setDuration(Duration.ZERO);
         }

@@ -48,7 +48,6 @@ class HttpTaskServerTest {
         Task task = new Task(Type.TASK, "Test1", "Testing task 1",
                 Duration.ofMinutes(5), LocalDateTime.now());
         String taskJson = gson.toJson(task);
-
         HttpClient client = HttpClient.newHttpClient();
         URI uri = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();

@@ -1,6 +1,7 @@
-package server;
+package handlers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exceptions.NotFoundException;
@@ -17,10 +18,8 @@ import java.time.Duration;
 
 public class HttpTasksHandler extends BaseHttpHandler implements HttpHandler {
 
-    private final TaskManager taskManager;
-
-    public HttpTasksHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+    public HttpTasksHandler(TaskManager taskManager, Gson gson) {
+        super(taskManager, gson);
     }
 
     @Override
@@ -36,7 +35,6 @@ public class HttpTasksHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleGetTasks(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         String tasksJson = gson.toJson(taskManager.getAllTasks());
         sendText(exchange, tasksJson);
     }
@@ -45,7 +43,6 @@ public class HttpTasksHandler extends BaseHttpHandler implements HttpHandler {
         String pathPart = exchange.getRequestURI().getPath().split("/")[2];
         try {
             Task task = taskManager.getTask(Integer.parseInt(pathPart));
-            Gson gson = makeGson();
             String taskJson = gson.toJson(task);
             sendText(exchange, taskJson);
         } catch (NumberFormatException | NotFoundException e) {
@@ -54,10 +51,14 @@ public class HttpTasksHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handlePostCreateTask(HttpExchange exchange) throws IOException {
-        Gson gson = makeGson();
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        Task task = gson.fromJson(body, Task.class);
+        Task task;
+        task = gson.fromJson(body, Task.class);
+        if (task == null) {
+            sendMessage(exchange, "Ошибка. Пустое тело запроса", 400);
+            return;
+        }
         if (task.getDuration() == null) {
             task.setDuration(Duration.ZERO);
         }
