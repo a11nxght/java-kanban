@@ -1,19 +1,11 @@
 package handlers;
 
-import adapter.DurationAdapter;
-import adapter.LocalDateTimeAdapter;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import service.TaskManager;
-import tasks.Task;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 abstract class BaseHttpHandler {
 
